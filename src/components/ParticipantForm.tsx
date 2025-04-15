@@ -1,58 +1,50 @@
 interface ParticipantFormProps {
     participants: any[];
-    setParticipants: React.Dispatch<React.SetStateAction<any[]>>;
+    saveParticipants: React.Dispatch<React.SetStateAction<any[]>>;
     attributes: { name: string; coefficient: number }[];
 }
 
-export const ParticipantForm = ({ participants, setParticipants, attributes }: ParticipantFormProps) => {
+export const ParticipantForm = ({ participants, saveParticipants, attributes }: ParticipantFormProps) => {
     const handleAddParticipant = () => {
         const newParticipant = {
             id: Date.now(),
             name: "",
             attribute: "", // 選択された属性（単数）
         };
-        setParticipants([...participants, newParticipant]);
+        saveParticipants([...participants, newParticipant]);
     };
 
     const handleRemoveParticipant = (id: number) => {
-        setParticipants(participants.filter((p) => p.id !== id));
+        saveParticipants(participants.filter((p) => p.id !== id));
     };
 
     const handleNameChange = (id: number, name: string) => {
-        setParticipants(participants.map((p) => (p.id === id ? { ...p, name } : p)));
+        saveParticipants(participants.map((p) => (p.id === id ? { ...p, name } : p)));
     };
 
     const handleAttributeChange = (id: number, attribute: string) => {
-        setParticipants(
-            participants.map((p) =>
-                p.id === id
-                    ? {
-                          ...p,
-                          attribute,
-                      }
-                    : p
-            )
-        );
+        saveParticipants(participants.map((p) => (p.id === id ? { ...p, attribute } : p)));
     };
 
     return (
         <div style={{ marginBottom: "1rem" }}>
             <h2 style={{ fontSize: "1.25rem", fontWeight: 600, marginBottom: "0.5rem" }}>2. 参加者登録</h2>
+            <p style={{ fontSize: "0.875rem", color: "#64748b" }}>参加者名と属性を登録してください。</p>
             <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
                 {participants.map((participant) => (
-                    <div key={participant.id} style={{ border: "1px solid #e5e7eb", padding: "0.5rem", borderRadius: "0.25rem" }}>
+                    <div key={participant.id} style={{ padding: "0.3rem 0", borderRadius: "0.25rem" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
                             <input
                                 type="text"
                                 value={participant.name}
                                 onChange={(e) => handleNameChange(participant.id, e.target.value)}
                                 placeholder="参加者名"
-                                style={{ border: "1px solid #e5e7eb", borderRadius: "0.25rem", padding: "0.25rem 0.5rem", flexGrow: 1 }}
+                                style={{ border: "1px solid #e5e7eb", borderRadius: "0.25rem", flexGrow: 1, padding: "0.5rem" }}
                             />
                             <select
                                 value={participant.attribute || ""}
                                 onChange={(e) => handleAttributeChange(participant.id, e.target.value)}
-                                style={{ border: "1px solid #e5e7eb", borderRadius: "0.25rem", padding: "0.25rem 0.5rem", minWidth: "180px" }}
+                                style={{ border: "1px solid #e5e7eb", borderRadius: "0.25rem", flexGrow: 1, padding: "0.5rem" }}
                             >
                                 <option value="" disabled>
                                     属性を選択してください
@@ -65,7 +57,21 @@ export const ParticipantForm = ({ participants, setParticipants, attributes }: P
                             </select>
                             <button
                                 onClick={() => handleRemoveParticipant(participant.id)}
-                                style={{ backgroundColor: "#ef4444", color: "white", padding: "0.25rem 0.5rem", borderRadius: "0.25rem", whiteSpace: "nowrap" }}
+                                style={{
+                                    backgroundColor: "#ef4444",
+                                    color: "white",
+                                    padding: "0.4rem 0.8rem",
+                                    borderRadius: "0.25rem",
+                                    whiteSpace: "nowrap",
+                                    border: "none",
+                                    cursor: "pointer",
+                                }}
+                                onMouseOver={(e) => {
+                                    e.currentTarget.style.backgroundColor = "#dc2626";
+                                }}
+                                onMouseOut={(e) => {
+                                    e.currentTarget.style.backgroundColor = "#ef4444";
+                                }}
                             >
                                 削除
                             </button>
@@ -75,7 +81,22 @@ export const ParticipantForm = ({ participants, setParticipants, attributes }: P
             </div>
             <button
                 onClick={handleAddParticipant}
-                style={{ marginTop: "0.5rem", backgroundColor: "#3b82f6", color: "white", padding: "0.5rem 1rem", borderRadius: "0.25rem", width: "100%" }}
+                style={{
+                    marginTop: "0.5rem",
+                    backgroundColor: "#3b82f6",
+                    color: "white",
+                    padding: "0.5rem 1rem",
+                    borderRadius: "0.25rem",
+                    width: "100%",
+                    border: "none",
+                    cursor: "pointer",
+                }}
+                onMouseOver={(e) => {
+                    e.currentTarget.style.backgroundColor = "#2563eb";
+                }}
+                onMouseOut={(e) => {
+                    e.currentTarget.style.backgroundColor = "#3b82f6";
+                }}
             >
                 参加者を追加
             </button>

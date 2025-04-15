@@ -110,12 +110,12 @@ export default function App() {
             >
                 WariKei: 傾斜割り勘サービス
             </h1>
-            <AttributeForm attributes={attributes} setAttributes={saveAttributes} />
-            <ParticipantForm participants={participants} setParticipants={saveParticipants} attributes={attributes} />
-            <CalculationPanel totalAmount={totalAmount} setTotalAmount={saveTotalAmount} unit={unit} setUnit={saveUnit} onCalculate={handleCalculate} />
+            <AttributeForm attributes={attributes} saveAttributes={saveAttributes} />
+            <ParticipantForm participants={participants} saveParticipants={saveParticipants} attributes={attributes} />
+            <CalculationPanel totalAmount={totalAmount} saveTotalAmount={saveTotalAmount} unit={unit} saveUnit={saveUnit} onCalculate={handleCalculate} />
             {results.length > 0 && (
                 <>
-                    <ResultTable results={results} setResults={saveResults} />
+                    <ResultTable results={results} saveResults={saveResults} />
                     <Summary results={results} totalAmount={totalAmount} />
                 </>
             )}

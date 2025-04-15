@@ -1,31 +1,28 @@
 interface CalculationPanelProps {
     totalAmount: number;
-    setTotalAmount: React.Dispatch<React.SetStateAction<number>>;
+    saveTotalAmount: React.Dispatch<React.SetStateAction<number>>;
     unit: number;
-    setUnit: React.Dispatch<React.SetStateAction<number>>;
+    saveUnit: React.Dispatch<React.SetStateAction<number>>;
     onCalculate: () => void;
 }
 
-export const CalculationPanel = ({ totalAmount, setTotalAmount, unit, setUnit, onCalculate }: CalculationPanelProps) => {
+export const CalculationPanel = ({ totalAmount, saveTotalAmount, unit, saveUnit, onCalculate }: CalculationPanelProps) => {
     return (
         <div
             style={{
-                backgroundColor: "white",
-                padding: "1rem",
-                borderRadius: "0.5rem",
-                boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
                 marginBottom: "1rem",
             }}
         >
             <h2
                 style={{
-                    fontSize: "1.125rem",
                     fontWeight: 600,
                     marginBottom: "1rem",
+                    fontSize: "1.25rem",
                 }}
             >
-                計算設定
+                3. 計算設定
             </h2>
+            <p style={{ fontSize: "0.875rem", color: "#64748b" }}>支払い金額と支払い単位を設定してください。</p>
             <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
                 <div>
                     <label
@@ -44,16 +41,17 @@ export const CalculationPanel = ({ totalAmount, setTotalAmount, unit, setUnit, o
                         type="number"
                         id="totalAmount"
                         value={totalAmount}
-                        onChange={(e) => setTotalAmount(Number(e.target.value))}
+                        onChange={(e) => saveTotalAmount(Number(e.target.value))}
                         style={{
                             width: "100%",
-                            paddingLeft: "0.75rem",
-                            paddingRight: "0.75rem",
                             paddingTop: "0.5rem",
                             paddingBottom: "0.5rem",
+                            paddingLeft: "0.5rem",
+                            paddingRight: "0.5rem",
                             border: "1px solid #d1d5db",
                             borderRadius: "0.375rem",
                             outline: "none",
+                            textAlign: "right",
                         }}
                         min="0"
                     />
@@ -74,7 +72,7 @@ export const CalculationPanel = ({ totalAmount, setTotalAmount, unit, setUnit, o
                     <select
                         id="unit"
                         value={unit}
-                        onChange={(e) => setUnit(Number(e.target.value))}
+                        onChange={(e) => saveUnit(Number(e.target.value))}
                         style={{
                             width: "100%",
                             paddingLeft: "0.75rem",
@@ -105,6 +103,12 @@ export const CalculationPanel = ({ totalAmount, setTotalAmount, unit, setUnit, o
                         borderRadius: "0.375rem",
                         border: "none",
                         cursor: "pointer",
+                    }}
+                    onMouseOver={(e) => {
+                        e.currentTarget.style.backgroundColor = "#2563eb";
+                    }}
+                    onMouseOut={(e) => {
+                        e.currentTarget.style.backgroundColor = "#3b82f6";
                     }}
                 >
                     計算する

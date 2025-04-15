@@ -4,19 +4,35 @@ interface SummaryProps {
 }
 
 export const Summary = ({ results, totalAmount }: SummaryProps) => {
+    // 合計集金額の計算
+    const totalCollected = results.reduce((acc, result) => acc + result.amount, 0);
+
     return (
-        <div className="mt-4 p-4 bg-gray-100 rounded-lg">
-            <h2 className="text-xl font-bold mb-2">合計金額</h2>
-            <p className="text-lg">{totalAmount.toLocaleString()}円</p>
-            <h2 className="text-xl font-bold mt-4 mb-2">各参加者の支払い金額</h2>
-            <div className="space-y-2">
-                {results.map((result, index) => (
-                    <div key={index} className="flex justify-between">
-                        <span>{result.name}</span>
-                        <span>{result.amount.toLocaleString()}円</span>
-                    </div>
-                ))}
-            </div>
+        <div style={{ marginBottom: "1rem", padding: "1rem", backgroundColor: "#f3f4f6" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                <thead>
+                    <tr style={{ borderBottom: "1px solid #e5e7eb" }}>
+                        <th style={{ textAlign: "left", padding: "0.5rem", fontSize: "1.1rem", fontWeight: "bold" }}>項目</th>
+                        <th style={{ textAlign: "right", padding: "0.5rem", fontSize: "1.1rem", fontWeight: "bold" }}>金額</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style={{ borderBottom: "1px solid #e5e7eb" }}>
+                        <td style={{ textAlign: "left", padding: "0.5rem", fontSize: "1rem" }}>支払い金額</td>
+                        <td style={{ textAlign: "right", padding: "0.5rem", fontSize: "1rem" }}>{totalAmount.toLocaleString()}円</td>
+                    </tr>
+                    <tr style={{ borderBottom: "1px solid #e5e7eb" }}>
+                        <td style={{ textAlign: "left", padding: "0.5rem", fontSize: "1rem" }}>合計集金額</td>
+                        <td style={{ textAlign: "right", padding: "0.5rem", fontSize: "1rem" }}>{totalCollected.toLocaleString()}円</td>
+                    </tr>
+                    <tr>
+                        <td style={{ textAlign: "left", padding: "0.5rem", fontSize: "1rem", fontWeight: "bold" }}>差額</td>
+                        <td style={{ textAlign: "right", padding: "0.5rem", fontSize: "1rem", fontWeight: "bold" }}>
+                            {(totalAmount - totalCollected).toLocaleString()}円
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     );
 };

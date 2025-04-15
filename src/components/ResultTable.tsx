@@ -1,3 +1,5 @@
+import React from "react";
+
 interface ResultTableProps {
     results: {
         name: string;
@@ -5,57 +7,102 @@ interface ResultTableProps {
         amount: number;
         isPaid: boolean;
     }[];
-    setResults: React.Dispatch<React.SetStateAction<any[]>>;
+    saveResults: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
-export const ResultTable = ({ results, setResults }: ResultTableProps) => {
+export const ResultTable = ({ results, saveResults }: ResultTableProps) => {
+    const [copyStatus, setCopyStatus] = React.useState<string | null>(null);
+
     const handlePaymentChange = (index: number) => {
         const newResults = [...results];
         newResults[index] = {
             ...newResults[index],
             isPaid: !newResults[index].isPaid,
         };
-        setResults(newResults);
+        saveResults(newResults);
     };
 
     const copyToClipboard = () => {
         const text = results
             .map((result) => `${result.name}（${result.attribute}）: ${result.amount}円（${result.isPaid ? "支払い済み" : "未払い"}）`)
             .join("\n");
-        navigator.clipboard.writeText(text);
+        navigator.clipboard
+            .writeText(text)
+            .then(() => {
+                setCopyStatus("コピーしました！");
+                setTimeout(() => setCopyStatus(null), 3000);
+            })
+            .catch((err) => {
+                console.error("クリップボードへのコピーに失敗しました:", err);
+                setCopyStatus("コピーに失敗しました。");
+                setTimeout(() => setCopyStatus(null), 3000);
+            });
     };
 
     return (
-        <div className="mt-4">
-            <div className="flex justify-between items-center mb-2">
-                <h2 className="text-xl font-bold">支払い状況</h2>
-                <button onClick={copyToClipboard} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-                    コピー
-                </button>
-            </div>
-            <div className="overflow-x-auto">
-                <table className="min-w-full bg-white border border-gray-300">
+        <div style={{ marginBottom: "1rem" }}>
+            <h2 style={{ fontSize: "1.25rem", fontWeight: "bold" }}>4. 支払い状況の管理</h2>
+            <p style={{ fontSize: "0.875rem", color: "#64748b" }}>支払い状況を管理してください。</p>
+            <div style={{ overflowX: "auto", marginBottom: "0.5rem" }}>
+                <table style={{ minWidth: "100%", backgroundColor: "white", border: "1px solid #d1d5db", borderCollapse: "collapse" }}>
                     <thead>
                         <tr>
-                            <th className="px-4 py-2 border">名前</th>
-                            <th className="px-4 py-2 border">属性</th>
-                            <th className="px-4 py-2 border">金額</th>
-                            <th className="px-4 py-2 border">支払い状況</th>
+                            <th style={{ padding: "0.5rem 1rem", border: "1px solid #d1d5db" }}>名前</th>
+                            <th style={{ padding: "0.5rem 1rem", border: "1px solid #d1d5db" }}>属性</th>
+                            <th style={{ padding: "0.5rem 1rem", border: "1px solid #d1d5db" }}>金額</th>
+                            <th style={{ padding: "0.5rem 1rem", border: "1px solid #d1d5db" }}>支払い状況</th>
                         </tr>
                     </thead>
                     <tbody>
                         {results.map((result, index) => (
                             <tr key={index}>
-                                <td className="px-4 py-2 border">{result.name}</td>
-                                <td className="px-4 py-2 border">{result.attribute}</td>
-                                <td className="px-4 py-2 border">{result.amount}円</td>
-                                <td className="px-4 py-2 border">
-                                    <input type="checkbox" checked={result.isPaid} onChange={() => handlePaymentChange(index)} className="w-4 h-4" />
+                                <td style={{ padding: "0.5rem 1rem", border: "1px solid #d1d5db" }}>{result.name}</td>
+                                <td style={{ padding: "0.5rem 1rem", border: "1px solid #d1d5db" }}>{result.attribute}</td>
+                                <td style={{ padding: "0.5rem 1rem", border: "1px solid #d1d5db" }}>{result.amount}円</td>
+                                <td style={{ padding: "0.5rem 1rem", border: "1px solid #d1d5db" }}>
+                                    <input
+                                        type="checkbox"
+                                        checked={result.isPaid}
+                                        onChange={() => handlePaymentChange(index)}
+                                        style={{ width: "1rem", height: "1rem" }}
+                                    />
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
+            </div>
+            <div style={{ marginBottom: "0.5rem", width: "100%" }}>
+                <button
+                    onClick={copyToClipboard}
+                    style={{
+                        padding: "0.5rem 1rem",
+                        backgroundColor: "#3b82f6",
+                        color: "white",
+                        borderRadius: "0.25rem",
+                        border: "none",
+                        cursor: "pointer",
+                        width: "100%",
+                    }}
+                    onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#2563eb")}
+                    onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#3b82f6")}
+                >
+                    支払い状況のコピー
+                </button>
+                {copyStatus && (
+                    <div
+                        style={{
+                            marginTop: "0.5rem",
+                            padding: "0.5rem",
+                            backgroundColor: copyStatus.includes("失敗") ? "#fee2e2" : "#dcfce7",
+                            color: copyStatus.includes("失敗") ? "#b91c1c" : "#15803d",
+                            borderRadius: "0.25rem",
+                            textAlign: "center",
+                        }}
+                    >
+                        {copyStatus}
+                    </div>
+                )}
             </div>
         </div>
     );
