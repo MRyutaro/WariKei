@@ -11,7 +11,7 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
   },
-  "homepage": "https://mryutaro.github.io/warikei/",
+  "homepage": "https://mryutaro.github.io/WariKei/",
   "dependencies": {
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
