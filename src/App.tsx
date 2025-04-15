@@ -1,4 +1,4 @@
-import { useEffect, useState, Dispatch, SetStateAction } from "react";
+import { useEffect, useState, SetStateAction } from "react";
 import { AttributeForm } from "./components/AttributeForm";
 import { CalculationPanel } from "./components/CalculationPanel";
 import calculateShare from "./utils/calculate";
