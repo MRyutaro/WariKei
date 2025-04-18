@@ -15,35 +15,50 @@ export default function App() {
     const [results, setResults] = useState<Result[]>([]);
 
     // Save to localStorage functions
-    const saveAttributes = (newAttributes: SetStateAction<{ name: string; coefficient: number }[]>) => {
-        setAttributes(newAttributes);
-        const updatedValue = typeof newAttributes === "function" ? newAttributes(attributes) : newAttributes;
-        localStorage.setItem("warikei_attributes", JSON.stringify(updatedValue));
-    };
+    const saveAttributes = useCallback(
+        (newAttributes: SetStateAction<{ name: string; coefficient: number }[]>) => {
+            setAttributes(newAttributes);
+            const updatedValue = typeof newAttributes === "function" ? newAttributes(attributes) : newAttributes;
+            localStorage.setItem("warikei_attributes", JSON.stringify(updatedValue));
+        },
+        [attributes]
+    );
 
-    const saveParticipants = (newParticipants: SetStateAction<Participant[]>) => {
-        setParticipants(newParticipants);
-        const updatedValue = typeof newParticipants === "function" ? newParticipants(participants) : newParticipants;
-        localStorage.setItem("warikei_participants", JSON.stringify(updatedValue));
-    };
+    const saveParticipants = useCallback(
+        (newParticipants: SetStateAction<Participant[]>) => {
+            setParticipants(newParticipants);
+            const updatedValue = typeof newParticipants === "function" ? newParticipants(participants) : newParticipants;
+            localStorage.setItem("warikei_participants", JSON.stringify(updatedValue));
+        },
+        [participants]
+    );
 
-    const saveTotalAmount = (newAmount: SetStateAction<number>) => {
-        setTotalAmount(newAmount);
-        const updatedValue = typeof newAmount === "function" ? newAmount(totalAmount) : newAmount;
-        localStorage.setItem("warikei_totalAmount", String(updatedValue));
-    };
+    const saveTotalAmount = useCallback(
+        (newAmount: SetStateAction<number>) => {
+            setTotalAmount(newAmount);
+            const updatedValue = typeof newAmount === "function" ? newAmount(totalAmount) : newAmount;
+            localStorage.setItem("warikei_totalAmount", String(updatedValue));
+        },
+        [totalAmount]
+    );
 
-    const saveUnit = (newUnit: SetStateAction<number>) => {
-        setUnit(newUnit);
-        const updatedValue = typeof newUnit === "function" ? newUnit(unit) : newUnit;
-        localStorage.setItem("warikei_unit", String(updatedValue));
-    };
+    const saveUnit = useCallback(
+        (newUnit: SetStateAction<number>) => {
+            setUnit(newUnit);
+            const updatedValue = typeof newUnit === "function" ? newUnit(unit) : newUnit;
+            localStorage.setItem("warikei_unit", String(updatedValue));
+        },
+        [unit]
+    );
 
-    const saveResults = (newResults: SetStateAction<Result[]>) => {
-        setResults(newResults);
-        const updatedValue = typeof newResults === "function" ? newResults(results) : newResults;
-        localStorage.setItem("warikei_results", JSON.stringify(updatedValue));
-    };
+    const saveResults = useCallback(
+        (newResults: SetStateAction<Result[]>) => {
+            setResults(newResults);
+            const updatedValue = typeof newResults === "function" ? newResults(results) : newResults;
+            localStorage.setItem("warikei_results", JSON.stringify(updatedValue));
+        },
+        [results]
+    );
 
     // Load from localStorage on mount
     useEffect(() => {
@@ -83,7 +98,7 @@ export default function App() {
                 saveParticipants(updatedParticipants);
             }
         }
-    }, [attributes]);
+    }, [attributes, participants, saveParticipants]);
 
     const handleCalculate = () => {
         // 計算する前に、最新の属性係数を参加者に反映する

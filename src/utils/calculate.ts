@@ -60,7 +60,7 @@ export default function calculate(participants: Participant[], attributes: Attri
     });
 
     // assemble initial results
-    let results: Result[] = enriched.map((p) => ({
+    const results: Result[] = enriched.map((p) => ({
         id: p.id,
         name: p.name,
         attribute: p.attribute,
