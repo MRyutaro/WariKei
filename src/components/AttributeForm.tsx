@@ -26,6 +26,16 @@ export const AttributeForm = ({ attributes, saveAttributes }: AttributeFormProps
                 return;
             }
         }
+
+        // 係数は数値として扱う
+        if (field === "coefficient" && typeof value === "string") {
+            value = Number(value);
+            // 係数が0以下の場合は0.1に設定
+            if (value <= 0) {
+                value = 0.1;
+            }
+        }
+
         const newAttributes = [...attributes];
         newAttributes[index] = {
             ...newAttributes[index],

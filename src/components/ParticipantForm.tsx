@@ -1,3 +1,5 @@
+import React, { useEffect } from "react";
+
 interface ParticipantFormProps {
     participants: any[];
     saveParticipants: React.Dispatch<React.SetStateAction<any[]>>;
@@ -9,7 +11,8 @@ export const ParticipantForm = ({ participants, saveParticipants, attributes }: 
         const newParticipant = {
             id: Date.now(),
             name: "",
-            attribute: "", // 選択された属性（単数）
+            attribute: "",
+            coefficient: 0,
         };
         saveParticipants([...participants, newParticipant]);
     };
@@ -23,8 +26,29 @@ export const ParticipantForm = ({ participants, saveParticipants, attributes }: 
     };
 
     const handleAttributeChange = (id: number, attribute: string) => {
-        saveParticipants(participants.map((p) => (p.id === id ? { ...p, attribute } : p)));
+        const selectedAttribute = attributes.find((attr) => attr.name === attribute);
+        const coefficient = selectedAttribute ? selectedAttribute.coefficient : 0;
+        saveParticipants(participants.map((p) => (p.id === id ? { ...p, attribute, coefficient } : p)));
     };
+
+    const updateParticipantsCoefficients = () => {
+        const updatedParticipants = participants.map((p) => {
+            if (p.attribute) {
+                const attr = attributes.find((a) => a.name === p.attribute);
+                if (attr) {
+                    return { ...p, coefficient: attr.coefficient };
+                }
+            }
+            return p;
+        });
+        saveParticipants(updatedParticipants);
+    };
+
+    useEffect(() => {
+        if (participants.length > 0 && attributes.length > 0) {
+            updateParticipantsCoefficients();
+        }
+    }, [attributes]);
 
     return (
         <div style={{ marginBottom: "1rem" }}>

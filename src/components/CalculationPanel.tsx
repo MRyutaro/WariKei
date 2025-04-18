@@ -46,12 +46,13 @@ export const CalculationPanel = ({ totalAmount, saveTotalAmount, unit, saveUnit,
                             width: "100%",
                             paddingTop: "0.5rem",
                             paddingBottom: "0.5rem",
-                            paddingLeft: "0.5rem",
-                            paddingRight: "0.5rem",
+                            paddingLeft: "0",
+                            paddingRight: "0",
                             border: "1px solid #d1d5db",
                             borderRadius: "0.375rem",
                             outline: "none",
                             textAlign: "right",
+                            boxSizing: "border-box",
                         }}
                         min="0"
                     />

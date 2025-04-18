@@ -1,7 +1,7 @@
 import { useEffect, useState, SetStateAction } from "react";
 import { AttributeForm } from "./components/AttributeForm";
 import { CalculationPanel } from "./components/CalculationPanel";
-import calculateShare from "./utils/calculate";
+import calculate from "./utils/calculate";
 import { ParticipantForm } from "./components/ParticipantForm";
 import { ResetButton } from "./components/ResetButton";
 import { ResultTable } from "./components/ResultTable";
@@ -64,8 +64,26 @@ export default function App() {
         }
     }, []);
 
+    // 属性の係数が変更されたときに、参加者の係数も更新する
+    const updateParticipantsCoefficients = () => {
+        const updatedParticipants = participants.map((p) => {
+            if (p.attribute) {
+                const attr = attributes.find((a) => a.name === p.attribute);
+                if (attr) {
+                    return { ...p, coefficient: attr.coefficient };
+                }
+            }
+            return p;
+        });
+        setParticipants(updatedParticipants);
+        localStorage.setItem("warikei_participants", JSON.stringify(updatedParticipants));
+        return updatedParticipants;
+    };
+
     const handleCalculate = () => {
-        const result = calculateShare(participants, attributes, totalAmount, unit);
+        // 計算する前に、最新の属性係数を参加者に反映する
+        const updatedParticipants = updateParticipantsCoefficients();
+        const result = calculate(updatedParticipants, attributes, totalAmount, unit);
         saveResults(result);
     };
 
@@ -115,8 +133,8 @@ export default function App() {
             <CalculationPanel totalAmount={totalAmount} saveTotalAmount={saveTotalAmount} unit={unit} saveUnit={saveUnit} onCalculate={handleCalculate} />
             {results.length > 0 && (
                 <>
-                    <ResultTable results={results} saveResults={saveResults} />
                     <Summary results={results} totalAmount={totalAmount} />
+                    <ResultTable results={results} saveResults={saveResults} />
                 </>
             )}
             <ResetButton onReset={handleReset} />
