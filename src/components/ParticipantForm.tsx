@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from "react";
+import React from "react";
 import { Participant } from "../utils/calculate";
 
 interface ParticipantFormProps {
@@ -31,25 +31,6 @@ export const ParticipantForm = ({ participants, saveParticipants, attributes }: 
         const coefficient = selectedAttribute ? selectedAttribute.coefficient : 0;
         saveParticipants(participants.map((p) => (p.id === id ? { ...p, attribute, coefficient } : p)));
     };
-
-    const updateParticipantsCoefficients = useCallback(() => {
-        const updatedParticipants = participants.map((p) => {
-            if (p.attribute) {
-                const attr = attributes.find((a) => a.name === p.attribute);
-                if (attr) {
-                    return { ...p, coefficient: attr.coefficient };
-                }
-            }
-            return p;
-        });
-        saveParticipants(updatedParticipants);
-    }, [participants, attributes, saveParticipants]);
-
-    useEffect(() => {
-        if (participants.length > 0 && attributes.length > 0) {
-            updateParticipantsCoefficients();
-        }
-    }, [attributes, participants, updateParticipantsCoefficients]);
 
     return (
         <div style={{ marginBottom: "1rem" }}>

@@ -23,6 +23,8 @@ export interface Result {
 }
 
 export default function calculate(participants: Participant[], attributes: Attribute[] = [], totalAmount: number, unit: number = 1): Result[] {
+    console.log(participants, attributes, totalAmount, unit);
+
     if (unit <= 0) throw new Error("unit must be positive");
     if (totalAmount < 0) throw new Error("totalAmount must be non-negative");
 
@@ -94,5 +96,6 @@ export default function calculate(participants: Participant[], attributes: Attri
         r.effectiveCoefficient = Math.round((r.amount / actualTotal) * weightSum * 100) / 100;
     });
 
+    console.log(results);
     return results;
 }
