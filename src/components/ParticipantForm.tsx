@@ -1,14 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
+import { Participant } from "../utils/calculate";
 
 interface ParticipantFormProps {
-    participants: any[];
-    saveParticipants: React.Dispatch<React.SetStateAction<any[]>>;
+    participants: Participant[];
+    saveParticipants: React.Dispatch<React.SetStateAction<Participant[]>>;
     attributes: { name: string; coefficient: number }[];
 }
 
 export const ParticipantForm = ({ participants, saveParticipants, attributes }: ParticipantFormProps) => {
     const handleAddParticipant = () => {
-        const newParticipant = {
+        const newParticipant: Participant = {
             id: Date.now(),
             name: "",
             attribute: "",
@@ -17,21 +18,21 @@ export const ParticipantForm = ({ participants, saveParticipants, attributes }: 
         saveParticipants([...participants, newParticipant]);
     };
 
-    const handleRemoveParticipant = (id: number) => {
+    const handleRemoveParticipant = (id: number | string) => {
         saveParticipants(participants.filter((p) => p.id !== id));
     };
 
-    const handleNameChange = (id: number, name: string) => {
+    const handleNameChange = (id: number | string, name: string) => {
         saveParticipants(participants.map((p) => (p.id === id ? { ...p, name } : p)));
     };
 
-    const handleAttributeChange = (id: number, attribute: string) => {
+    const handleAttributeChange = (id: number | string, attribute: string) => {
         const selectedAttribute = attributes.find((attr) => attr.name === attribute);
         const coefficient = selectedAttribute ? selectedAttribute.coefficient : 0;
         saveParticipants(participants.map((p) => (p.id === id ? { ...p, attribute, coefficient } : p)));
     };
 
-    const updateParticipantsCoefficients = () => {
+    const updateParticipantsCoefficients = useCallback(() => {
         const updatedParticipants = participants.map((p) => {
             if (p.attribute) {
                 const attr = attributes.find((a) => a.name === p.attribute);
@@ -42,13 +43,13 @@ export const ParticipantForm = ({ participants, saveParticipants, attributes }: 
             return p;
         });
         saveParticipants(updatedParticipants);
-    };
+    }, [participants, attributes, saveParticipants]);
 
     useEffect(() => {
         if (participants.length > 0 && attributes.length > 0) {
             updateParticipantsCoefficients();
         }
-    }, [attributes]);
+    }, [attributes, participants, updateParticipantsCoefficients]);
 
     return (
         <div style={{ marginBottom: "1rem" }}>
@@ -61,13 +62,13 @@ export const ParticipantForm = ({ participants, saveParticipants, attributes }: 
                             <input
                                 type="text"
                                 value={participant.name}
-                                onChange={(e) => handleNameChange(participant.id, e.target.value)}
+                                onChange={(e) => handleNameChange(participant.id!, e.target.value)}
                                 placeholder="参加者名"
                                 style={{ border: "1px solid #e5e7eb", borderRadius: "0.25rem", flexGrow: 1, padding: "0.5rem" }}
                             />
                             <select
                                 value={participant.attribute || ""}
-                                onChange={(e) => handleAttributeChange(participant.id, e.target.value)}
+                                onChange={(e) => handleAttributeChange(participant.id!, e.target.value)}
                                 style={{ border: "1px solid #e5e7eb", borderRadius: "0.25rem", flexGrow: 1, padding: "0.5rem" }}
                             >
                                 <option value="" disabled>
@@ -80,7 +81,7 @@ export const ParticipantForm = ({ participants, saveParticipants, attributes }: 
                                 ))}
                             </select>
                             <button
-                                onClick={() => handleRemoveParticipant(participant.id)}
+                                onClick={() => handleRemoveParticipant(participant.id!)}
                                 style={{
                                     backgroundColor: "#ef4444",
                                     color: "white",

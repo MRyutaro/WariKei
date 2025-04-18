@@ -1,5 +1,7 @@
+import { Result } from "../utils/calculate";
+
 interface SummaryProps {
-    results: any[];
+    results: Result[];
     totalAmount: number;
 }
 

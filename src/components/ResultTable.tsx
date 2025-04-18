@@ -1,13 +1,9 @@
 import React from "react";
+import { Result } from "../utils/calculate";
 
 interface ResultTableProps {
-    results: {
-        name: string;
-        attribute: string;
-        amount: number;
-        isPaid: boolean;
-    }[];
-    saveResults: React.Dispatch<React.SetStateAction<any[]>>;
+    results: Result[];
+    saveResults: React.Dispatch<React.SetStateAction<Result[]>>;
 }
 
 export const ResultTable = ({ results, saveResults }: ResultTableProps) => {

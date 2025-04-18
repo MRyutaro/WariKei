@@ -1,7 +1,7 @@
-import { useEffect, useState, SetStateAction } from "react";
+import { useEffect, useState, SetStateAction, useCallback } from "react";
 import { AttributeForm } from "./components/AttributeForm";
 import { CalculationPanel } from "./components/CalculationPanel";
-import calculate from "./utils/calculate";
+import calculate, { Participant, Result } from "./utils/calculate";
 import { ParticipantForm } from "./components/ParticipantForm";
 import { ResetButton } from "./components/ResetButton";
 import { ResultTable } from "./components/ResultTable";
@@ -9,10 +9,10 @@ import { Summary } from "./components/Summary";
 
 export default function App() {
     const [attributes, setAttributes] = useState<{ name: string; coefficient: number }[]>([]);
-    const [participants, setParticipants] = useState<any[]>([]);
+    const [participants, setParticipants] = useState<Participant[]>([]);
     const [totalAmount, setTotalAmount] = useState<number>(0);
     const [unit, setUnit] = useState<number>(1);
-    const [results, setResults] = useState<any[]>([]);
+    const [results, setResults] = useState<Result[]>([]);
 
     // Save to localStorage functions
     const saveAttributes = (newAttributes: SetStateAction<{ name: string; coefficient: number }[]>) => {
@@ -21,7 +21,7 @@ export default function App() {
         localStorage.setItem("warikei_attributes", JSON.stringify(updatedValue));
     };
 
-    const saveParticipants = (newParticipants: SetStateAction<any[]>) => {
+    const saveParticipants = (newParticipants: SetStateAction<Participant[]>) => {
         setParticipants(newParticipants);
         const updatedValue = typeof newParticipants === "function" ? newParticipants(participants) : newParticipants;
         localStorage.setItem("warikei_participants", JSON.stringify(updatedValue));
@@ -39,7 +39,7 @@ export default function App() {
         localStorage.setItem("warikei_unit", String(updatedValue));
     };
 
-    const saveResults = (newResults: SetStateAction<any[]>) => {
+    const saveResults = (newResults: SetStateAction<Result[]>) => {
         setResults(newResults);
         const updatedValue = typeof newResults === "function" ? newResults(results) : newResults;
         localStorage.setItem("warikei_results", JSON.stringify(updatedValue));
@@ -64,8 +64,29 @@ export default function App() {
         }
     }, []);
 
-    // 属性の係数が変更されたときに、参加者の係数も更新する
-    const updateParticipantsCoefficients = () => {
+    // attributesが変更されたときに、参加者の係数を更新する
+    useEffect(() => {
+        if (participants.length > 0 && attributes.length > 0) {
+            const updatedParticipants = participants.map((p) => {
+                if (p.attribute) {
+                    const attr = attributes.find((a) => a.name === p.attribute);
+                    if (attr) {
+                        return { ...p, coefficient: attr.coefficient };
+                    }
+                }
+                return p;
+            });
+
+            // 値が実際に変わっている場合のみ更新する
+            const hasChanged = JSON.stringify(updatedParticipants) !== JSON.stringify(participants);
+            if (hasChanged) {
+                saveParticipants(updatedParticipants);
+            }
+        }
+    }, [attributes]);
+
+    const handleCalculate = () => {
+        // 計算する前に、最新の属性係数を参加者に反映する
         const updatedParticipants = participants.map((p) => {
             if (p.attribute) {
                 const attr = attributes.find((a) => a.name === p.attribute);
@@ -75,14 +96,13 @@ export default function App() {
             }
             return p;
         });
-        setParticipants(updatedParticipants);
-        localStorage.setItem("warikei_participants", JSON.stringify(updatedParticipants));
-        return updatedParticipants;
-    };
 
-    const handleCalculate = () => {
-        // 計算する前に、最新の属性係数を参加者に反映する
-        const updatedParticipants = updateParticipantsCoefficients();
+        // 値が変わっている場合のみ参加者を更新
+        const hasChanged = JSON.stringify(updatedParticipants) !== JSON.stringify(participants);
+        if (hasChanged) {
+            saveParticipants(updatedParticipants);
+        }
+
         const result = calculate(updatedParticipants, attributes, totalAmount, unit);
         saveResults(result);
     };
