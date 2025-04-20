@@ -88,6 +88,7 @@ export const CalculationPanel = ({ totalAmount, saveTotalAmount, unit, saveUnit,
                         <option value="1">1円単位</option>
                         <option value="10">10円単位</option>
                         <option value="100">100円単位</option>
+                        <option value="500">500円単位</option>
                         <option value="1000">1000円単位</option>
                     </select>
                 </div>
